@@ -11,10 +11,6 @@ public final class AmadeusHotelListResponseEntry {
 	private String name;
 	private GeoCode geoCode;
 	
-	public AmadeusHotelListResponseEntry() {
-		
-	}
-
 	public String getHotelId() {
 		return hotelId;
 	}
@@ -54,7 +50,7 @@ public final class AmadeusHotelListResponseEntry {
 	private class GeoCode {
 		
 		private double latitude;
-		private double longtitude;
+		private double longitude;
 		
 		public GeoCode() {
 			
@@ -68,13 +64,14 @@ public final class AmadeusHotelListResponseEntry {
 			this.latitude = latitude;
 		}
 
-		public double getLongtitude() {
-			return longtitude;
+		public double getLongitude() {
+			return longitude;
 		}
 
-		private void setLongtitude(double longtitude) {
-			this.longtitude = longtitude;
+		private void setLongitude(double longitude) {
+			this.longitude = longitude;
 		}
+		
 	}
 	
 }
