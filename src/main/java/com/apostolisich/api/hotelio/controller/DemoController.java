@@ -5,20 +5,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.apostolisich.api.hotelio.amadeus.AccessTokenCreator;
-import com.apostolisich.api.hotelio.amadeus.AccessTokenResponse;
+import com.apostolisich.api.hotelio.amadeus.AmadeusHotelListResponse;
+import com.apostolisich.api.hotelio.amadeus.AmadeusHotelList;
 
 @RestController
 @RequestMapping("/hotel")
 public class DemoController {
 	
 	@Autowired
-	private AccessTokenCreator tokenCreator;
-	
+	private AmadeusHotelList hotelList;
 	
 	@GetMapping("/list")
-	public AccessTokenResponse test() {
-		return tokenCreator.getAccessToken();
+	public AmadeusHotelListResponse test() {
+		return hotelList.getAvailableHotels();
 	}
 
 }

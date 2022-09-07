@@ -7,7 +7,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
-public class AccessTokenCreator {
+public class AmadeusAccessTokenGetter {
 	
 	@Value("${amadeus.api.key}")
 	private String clientId;
@@ -21,20 +21,20 @@ public class AccessTokenCreator {
 	 * 
 	 * @return an access token
 	 */
-	public AccessTokenResponse getAccessToken() {
+	public String getAccessToken() {
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>(3);
 		formData.add("client_id", clientId);
 		formData.add("client_secret", clientSecret);
 		formData.add("grant_type", "client_credentials");
 		
 		WebClient webClient = WebClient.create("https://test.api.amadeus.com/v1/security/oauth2/token");
-		AccessTokenResponse response = webClient.post()
+		AmadeusAccessTokenResponse response = webClient.post()
 												.bodyValue(formData)
 												.retrieve()
-												.bodyToMono(AccessTokenResponse.class)
+												.bodyToMono(AmadeusAccessTokenResponse.class)
 												.block();
 		
-		return response;
+		return response.getAccessToken();
 	}
 	
 }
