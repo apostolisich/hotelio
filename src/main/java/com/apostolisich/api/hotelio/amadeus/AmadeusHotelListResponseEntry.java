@@ -47,7 +47,7 @@ public final class AmadeusHotelListResponseEntry {
 	 * An inner class that represents geoCode objects which consist of the
 	 * latitude and the longtitude of the hotel.
 	 */
-	private class GeoCode {
+	public class GeoCode {
 		
 		private double latitude;
 		private double longitude;
