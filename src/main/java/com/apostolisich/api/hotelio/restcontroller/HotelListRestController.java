@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.apostolisich.api.hotelio.amadeus.AmadeusHotelListService;
+import com.apostolisich.api.hotelio.provider.amadeus.AmadeusHotelListService;
 import com.apostolisich.api.hotelio.request.GetHotelListRequest;
 import com.apostolisich.api.hotelio.response.GetHotelListResponse;
 

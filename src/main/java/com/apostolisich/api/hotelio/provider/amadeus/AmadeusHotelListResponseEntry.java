@@ -1,4 +1,4 @@
-package com.apostolisich.api.hotelio.amadeus;
+package com.apostolisich.api.hotelio.provider.amadeus;
 
 /**
  * A class that represents each entry inside the Amadeus Hotel List.

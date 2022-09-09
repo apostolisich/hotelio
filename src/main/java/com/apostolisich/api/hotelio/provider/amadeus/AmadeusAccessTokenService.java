@@ -1,4 +1,4 @@
-package com.apostolisich.api.hotelio.amadeus;
+package com.apostolisich.api.hotelio.provider.amadeus;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

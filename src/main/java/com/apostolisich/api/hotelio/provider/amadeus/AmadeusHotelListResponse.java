@@ -1,4 +1,4 @@
-package com.apostolisich.api.hotelio.amadeus;
+package com.apostolisich.api.hotelio.provider.amadeus;
 
 import java.util.List;
 

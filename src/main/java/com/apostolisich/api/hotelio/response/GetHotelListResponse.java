@@ -1,14 +1,17 @@
 package com.apostolisich.api.hotelio.response;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * A class that represents a GetHotelListResponse. It includes all the hotel
- * entries that were returned by one of the providers.
+ * entries that were returned by a single provider.
  */
-public final class GetHotelListResponse {
+public final class GetHotelListResponse implements Serializable {
 
+	private static final long serialVersionUID = -8809873800735805787L;
+	
 	private String providerName;
 	private Set<HotelEntry> entries;
 
@@ -30,7 +33,10 @@ public final class GetHotelListResponse {
 	}
 	
 	@SuppressWarnings("unused")
-	private class HotelEntry {
+	private class HotelEntry implements Serializable {
+
+		private static final long serialVersionUID = 6096650415363266543L;
+		
 		private String id;
 		private String iataCode;
 		private String name;

@@ -1,44 +1,65 @@
-package com.apostolisich.api.hotelio.amadeus;
+package com.apostolisich.api.hotelio.provider.amadeus;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.apostolisich.api.hotelio.redis.RedisUtility;
 import com.apostolisich.api.hotelio.request.GetHotelListRequest;
 import com.apostolisich.api.hotelio.response.GetHotelListResponse;
 
 @Service
 public class AmadeusHotelListService {
 	
-	private final String HOTEL_LIST_BASE_URL = "https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-geocode?";
+	private static final String PROVIDER_NAME = "amadeus";
 	
 	@Autowired
 	private AmadeusAccessTokenService accessTokenCreator;
 	
+	@Autowired
+	private RedisUtility redisUtility;
+	
+	/**
+	 * Returns all the available hotels based on the provided {@code GetHotelListRequest}, either
+	 * directly from Amadeus or from the cache if they exist there.
+	 * 
+	 * @param hotelListRequest the body of the GetHotelList request
+	 * @return the constructed {@code GetHotelListResponse} of all the available hotels from Amadeus
+	 */
 	public GetHotelListResponse getHotelList(GetHotelListRequest hotelListRequest) {
-		String accessToken = accessTokenCreator.getAccessToken();
+		String cacheKey = PROVIDER_NAME + hotelListRequest.getKey();
 		
-		WebClient webClient = WebClient.create(buildAmadeusHotelListUrl(hotelListRequest));
-		AmadeusHotelListResponse amadeusHotelListResponse = webClient.get()
-																	 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-																	 .retrieve()
-																	 .bodyToMono(AmadeusHotelListResponse.class)
-																	 .block();
-		
-		return buildGetHotelListResponse(amadeusHotelListResponse);
+		GetHotelListResponse storedGetHotelListResponse = redisUtility.find(cacheKey);
+		if(storedGetHotelListResponse != null) {
+			return storedGetHotelListResponse;
+		} else {
+			String accessToken = accessTokenCreator.getAccessToken();
+			
+			WebClient webClient = WebClient.create(buildAmadeusHotelListUrl(hotelListRequest));
+			AmadeusHotelListResponse amadeusHotelListResponse = webClient.get()
+																		 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+																		 .retrieve()
+																		 .bodyToMono(AmadeusHotelListResponse.class)
+																		 .block();
+			
+			GetHotelListResponse getHotelListResponse = buildGetHotelListResponse(amadeusHotelListResponse, cacheKey);
+			
+			redisUtility.save(cacheKey, getHotelListResponse);
+			return getHotelListResponse;
+		}
 	}
 	
 	/**
 	 * Creates the URL for Amadeus Hotel List request based on the given {@code HotelListRequest}.
 	 * 
-	 * @param hotelListRequest the body of the HotelList request
+	 * @param hotelListRequest the body of the GetHotelList request
 	 * @return the created URL for the Amadeus Hotel List request
 	 */
 	private String buildAmadeusHotelListUrl(GetHotelListRequest hotelListRequest) {
 		StringBuilder amadeusHotelListUrlBuilder = new StringBuilder();
 		
-		amadeusHotelListUrlBuilder.append(HOTEL_LIST_BASE_URL);
+		amadeusHotelListUrlBuilder.append("https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-geocode?");
 		amadeusHotelListUrlBuilder.append("latitude=");
 		amadeusHotelListUrlBuilder.append(String.valueOf(hotelListRequest.getLatitude()));
 		amadeusHotelListUrlBuilder.append("&longitude=");
@@ -56,10 +77,11 @@ public class AmadeusHotelListService {
 	 * hotel entries and adds them to the {@code GetHotelListResponse}.
 	 * 
 	 * @param response an {@code AmadeusHotelListResponse} object
+	 * @param requestKey a key that is constructed by the GetHotelList request fields
 	 * @return the created {@code GetHotelListResponse}
 	 */
-	private GetHotelListResponse buildGetHotelListResponse(AmadeusHotelListResponse response) {
-		GetHotelListResponse getHotelListResponsePart = new GetHotelListResponse("amadeus");
+	private GetHotelListResponse buildGetHotelListResponse(AmadeusHotelListResponse response, String requestKey) {
+		GetHotelListResponse getHotelListResponsePart = new GetHotelListResponse(PROVIDER_NAME);
 		
 		response.getData().forEach( amadeusHotelEntry -> {
 			String id = amadeusHotelEntry.getHotelId();
