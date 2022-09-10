@@ -1,6 +1,9 @@
 package com.apostolisich.api.hotelio.hotellist;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import org.springframework.scheduling.annotation.Async;
 
 import com.apostolisich.api.hotelio.redis.RedisUtilityService;
 
@@ -31,18 +34,17 @@ public abstract class HotelListService {
 	 * @param hotelListRequest the body of the {@code GetHotelListRequest} request
 	 * @return the constructed {@code GetHotelListResponse} of all the available hotels
 	 */
-	public GetHotelListResponse getHotelList(GetHotelListRequest hotelListRequest) {
+	@Async
+	public CompletableFuture<GetHotelListResponse> getHotelList(GetHotelListRequest hotelListRequest) {
 		String cacheKey = providerName + hotelListRequest.getKey();
 		
-		GetHotelListResponse storedGetHotelListResponse = redisUtilityService.findHotelListResponseByKey(cacheKey);
-		if(storedGetHotelListResponse != null) {
-			return storedGetHotelListResponse;
-		} else {
-			GetHotelListResponse getHotelListResponse = getHotelListFromProvider(hotelListRequest);
+		GetHotelListResponse getHotelListResponse = redisUtilityService.findHotelListResponseByKey(cacheKey);
+		if(getHotelListResponse == null) {
+			getHotelListResponse = getHotelListFromProvider(hotelListRequest);
 			redisUtilityService.save(cacheKey, getHotelListResponse);
-			
-			return getHotelListResponse;
 		}
+		
+		return CompletableFuture.completedFuture(getHotelListResponse);
 	}
 	
 	/**

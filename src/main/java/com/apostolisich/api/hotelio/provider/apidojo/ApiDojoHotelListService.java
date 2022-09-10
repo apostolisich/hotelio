@@ -89,6 +89,9 @@ public class ApiDojoHotelListService extends HotelListService {
 			double latitude = apiDojoHotelEntry.getLatitude();
 			double longitude = apiDojoHotelEntry.getLongitude();
 			
+			if(name == null || latitude == 0.0 || longitude == 0.0)
+				return;
+			
 			getHotelListResponsePart.addHotelEntry(id, null, name, latitude, longitude);
 		});
 		
