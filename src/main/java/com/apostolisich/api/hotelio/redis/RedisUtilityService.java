@@ -9,22 +9,24 @@ import org.springframework.stereotype.Service;
 import com.apostolisich.api.hotelio.response.GetHotelListResponse;
 
 @Service
-public class RedisUtility {
+public class RedisUtilityService {
 	
-	private static final int CACHE_DURATION = 4;
+	private static final int CACHE_HOURS_DURATION = 4;
 
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 	
 	public void save(String key, Object value) {
 		redisTemplate.opsForValue().set(key, value);
-		redisTemplate.expire(key, CACHE_DURATION, TimeUnit.HOURS);
+		redisTemplate.expire(key, CACHE_HOURS_DURATION, TimeUnit.HOURS);
 	}
 	
-	public GetHotelListResponse find(String key) {
-		Object result = redisTemplate.opsForValue().get(key);
+	public GetHotelListResponse findHotelListResponseByKey(String key) {
+		if(redisTemplate.hasKey(key)) {
+			return (GetHotelListResponse) redisTemplate.opsForValue().get(key);
+		}
 
-		return result == null ? null : (GetHotelListResponse) result;
+		return null;
 	}
 	
 	public void delete(String key) {

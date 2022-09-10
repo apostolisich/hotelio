@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.apostolisich.api.hotelio.redis.RedisUtility;
+import com.apostolisich.api.hotelio.redis.RedisUtilityService;
 import com.apostolisich.api.hotelio.request.GetHotelListRequest;
 import com.apostolisich.api.hotelio.response.GetHotelListResponse;
 
@@ -18,7 +18,7 @@ public class AmadeusHotelListService {
 	private AmadeusAccessTokenService accessTokenCreator;
 	
 	@Autowired
-	private RedisUtility redisUtility;
+	private RedisUtilityService redisUtilityService;
 	
 	/**
 	 * Returns all the available hotels based on the provided {@code GetHotelListRequest}, either
@@ -30,24 +30,37 @@ public class AmadeusHotelListService {
 	public GetHotelListResponse getHotelList(GetHotelListRequest hotelListRequest) {
 		String cacheKey = PROVIDER_NAME + hotelListRequest.getKey();
 		
-		GetHotelListResponse storedGetHotelListResponse = redisUtility.find(cacheKey);
+		GetHotelListResponse storedGetHotelListResponse = redisUtilityService.findHotelListResponseByKey(cacheKey);
 		if(storedGetHotelListResponse != null) {
 			return storedGetHotelListResponse;
 		} else {
-			String accessToken = accessTokenCreator.getAccessToken();
-			
-			WebClient webClient = WebClient.create(buildAmadeusHotelListUrl(hotelListRequest));
-			AmadeusHotelListResponse amadeusHotelListResponse = webClient.get()
-																		 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-																		 .retrieve()
-																		 .bodyToMono(AmadeusHotelListResponse.class)
-																		 .block();
+			AmadeusHotelListResponse amadeusHotelListResponse = getHotelListResponseFromAmadeus(hotelListRequest);
 			
 			GetHotelListResponse getHotelListResponse = buildGetHotelListResponse(amadeusHotelListResponse, cacheKey);
+			redisUtilityService.save(cacheKey, getHotelListResponse);
 			
-			redisUtility.save(cacheKey, getHotelListResponse);
 			return getHotelListResponse;
 		}
+	}
+
+	/**
+	 * Sends a HotelList request to Amadeus based on the given {@code GetHotelListRequest}
+	 * and gets all the available hotels based on this criteria.
+	 * 
+	 * @param hotelListRequest the body of the GetHotelList request
+	 * @return the HotelList response from Amadeus
+	 */
+	private AmadeusHotelListResponse getHotelListResponseFromAmadeus(GetHotelListRequest hotelListRequest) {
+		String accessToken = accessTokenCreator.getAccessToken();
+		
+		WebClient webClient = WebClient.create(buildAmadeusHotelListUrl(hotelListRequest));
+		AmadeusHotelListResponse amadeusHotelListResponse = webClient.get()
+																	 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+																	 .retrieve()
+																	 .bodyToMono(AmadeusHotelListResponse.class)
+																	 .block();
+		
+		return amadeusHotelListResponse;
 	}
 	
 	/**
