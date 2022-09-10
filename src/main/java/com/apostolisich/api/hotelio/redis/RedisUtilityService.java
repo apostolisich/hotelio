@@ -6,15 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.apostolisich.api.hotelio.response.GetHotelListResponse;
+import com.apostolisich.api.hotelio.hotellist.GetHotelListResponse;
 
 @Service
 public class RedisUtilityService {
 	
 	private static final int CACHE_HOURS_DURATION = 4;
 
-	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
+	
+	@Autowired
+	public RedisUtilityService(RedisTemplate<String, Object> redisTemplate) {
+		this.redisTemplate = redisTemplate;
+	}
 	
 	public void save(String key, Object value) {
 		redisTemplate.opsForValue().set(key, value);

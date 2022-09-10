@@ -1,4 +1,4 @@
-package com.apostolisich.api.hotelio.request;
+package com.apostolisich.api.hotelio.hotellist;
 
 import java.util.Objects;
 

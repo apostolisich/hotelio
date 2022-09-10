@@ -1,4 +1,4 @@
-package com.apostolisich.api.hotelio.response;
+package com.apostolisich.api.hotelio.hotellist;
 
 import java.io.Serializable;
 import java.util.HashSet;

@@ -5,12 +5,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.apostolisich.api.hotelio.hotellist.GetHotelListRequest;
+import com.apostolisich.api.hotelio.hotellist.GetHotelListResponse;
+import com.apostolisich.api.hotelio.hotellist.HotelListService;
 import com.apostolisich.api.hotelio.redis.RedisUtilityService;
-import com.apostolisich.api.hotelio.request.GetHotelListRequest;
-import com.apostolisich.api.hotelio.response.GetHotelListResponse;
 
 @Service
-public class AmadeusHotelListService {
+public class AmadeusHotelListService extends HotelListService {
 	
 	private static final String PROVIDER_NAME = "amadeus";
 	
@@ -18,36 +19,24 @@ public class AmadeusHotelListService {
 	private AmadeusAccessTokenService accessTokenCreator;
 	
 	@Autowired
-	private RedisUtilityService redisUtilityService;
+	public AmadeusHotelListService(RedisUtilityService redisUtilityService) {
+		super(PROVIDER_NAME, redisUtilityService);
+	}
 	
-	/**
-	 * Returns all the available hotels based on the provided {@code GetHotelListRequest}, either
-	 * directly from Amadeus or from the cache if they exist there.
-	 * 
-	 * @param hotelListRequest the body of the GetHotelList request
-	 * @return the constructed {@code GetHotelListResponse} of all the available hotels from Amadeus
-	 */
-	public GetHotelListResponse getHotelList(GetHotelListRequest hotelListRequest) {
-		String cacheKey = PROVIDER_NAME + hotelListRequest.getKey();
+	@Override
+	protected GetHotelListResponse getHotelListFromProvider(GetHotelListRequest hotelListRequest) {
+		AmadeusHotelListResponse amadeusHotelListResponse = getHotelListResponseFromAmadeus(hotelListRequest);
 		
-		GetHotelListResponse storedGetHotelListResponse = redisUtilityService.findHotelListResponseByKey(cacheKey);
-		if(storedGetHotelListResponse != null) {
-			return storedGetHotelListResponse;
-		} else {
-			AmadeusHotelListResponse amadeusHotelListResponse = getHotelListResponseFromAmadeus(hotelListRequest);
-			
-			GetHotelListResponse getHotelListResponse = buildGetHotelListResponse(amadeusHotelListResponse, cacheKey);
-			redisUtilityService.save(cacheKey, getHotelListResponse);
-			
-			return getHotelListResponse;
-		}
+		GetHotelListResponse getHotelListResponse = buildGetHotelListResponse(amadeusHotelListResponse);
+		
+		return getHotelListResponse;
 	}
 
 	/**
 	 * Sends a HotelList request to Amadeus based on the given {@code GetHotelListRequest}
 	 * and gets all the available hotels based on this criteria.
 	 * 
-	 * @param hotelListRequest the body of the GetHotelList request
+	 * @param hotelListRequest the body of the {@code GetHotelListRequest} request
 	 * @return the HotelList response from Amadeus
 	 */
 	private AmadeusHotelListResponse getHotelListResponseFromAmadeus(GetHotelListRequest hotelListRequest) {
@@ -90,10 +79,9 @@ public class AmadeusHotelListService {
 	 * hotel entries and adds them to the {@code GetHotelListResponse}.
 	 * 
 	 * @param response an {@code AmadeusHotelListResponse} object
-	 * @param requestKey a key that is constructed by the GetHotelList request fields
 	 * @return the created {@code GetHotelListResponse}
 	 */
-	private GetHotelListResponse buildGetHotelListResponse(AmadeusHotelListResponse response, String requestKey) {
+	private GetHotelListResponse buildGetHotelListResponse(AmadeusHotelListResponse response) {
 		GetHotelListResponse getHotelListResponsePart = new GetHotelListResponse(PROVIDER_NAME);
 		
 		response.getData().forEach( amadeusHotelEntry -> {
