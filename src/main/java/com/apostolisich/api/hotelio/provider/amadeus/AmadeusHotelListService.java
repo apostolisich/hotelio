@@ -13,23 +13,21 @@ import com.apostolisich.api.hotelio.redis.RedisUtilityService;
 @Service
 public class AmadeusHotelListService extends HotelListService {
 	
-	private static final String PROVIDER_NAME = "amadeus";
+	private static final String PROVIDER = "amadeus";
 	
 	@Autowired
 	private AmadeusAccessTokenService accessTokenCreator;
 	
 	@Autowired
 	public AmadeusHotelListService(RedisUtilityService redisUtilityService) {
-		super(PROVIDER_NAME, redisUtilityService);
+		super(PROVIDER, redisUtilityService);
 	}
 	
 	@Override
 	protected GetHotelListResponse getHotelListFromProvider(GetHotelListRequest hotelListRequest) {
 		AmadeusHotelListResponse amadeusHotelListResponse = getHotelListResponseFromAmadeus(hotelListRequest);
 		
-		GetHotelListResponse getHotelListResponse = buildGetHotelListResponse(amadeusHotelListResponse);
-		
-		return getHotelListResponse;
+		return buildGetHotelListResponse(amadeusHotelListResponse);
 	}
 
 	/**
@@ -82,7 +80,7 @@ public class AmadeusHotelListService extends HotelListService {
 	 * @return the created {@code GetHotelListResponse}
 	 */
 	private GetHotelListResponse buildGetHotelListResponse(AmadeusHotelListResponse response) {
-		GetHotelListResponse getHotelListResponsePart = new GetHotelListResponse(PROVIDER_NAME);
+		GetHotelListResponse getHotelListResponsePart = new GetHotelListResponse(PROVIDER);
 		
 		response.getData().forEach( amadeusHotelEntry -> {
 			String id = amadeusHotelEntry.getHotelId();

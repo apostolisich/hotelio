@@ -32,7 +32,11 @@ public class HotelListRestController {
 		List<GetHotelListResponse> hotelListResponses = new ArrayList<>(hotelListServices.size());
 		
 		hotelListServices.forEach( hotelListService -> {
-			hotelListResponses.add(hotelListService.getHotelList(hotelListRequest));
+			GetHotelListResponse hotelListResponse = hotelListService.getHotelList(hotelListRequest);
+			if(hotelListResponse == null)
+				return;
+			
+			hotelListResponses.add(hotelListResponse);
 		});
 		
 		return hotelListResponses;

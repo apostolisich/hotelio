@@ -12,16 +12,16 @@ public final class GetHotelListResponse implements Serializable {
 
 	private static final long serialVersionUID = -8809873800735805787L;
 	
-	private String providerName;
+	private String provider;
 	private Set<HotelEntry> entries;
 
-	public GetHotelListResponse(String providerName) {
-		this.providerName = providerName;
+	public GetHotelListResponse(String provider) {
+		this.provider = provider;
 		entries = new HashSet<>();
 	}
 	
-	public String getProviderName() {
-		return providerName;
+	public String getProvider() {
+		return provider;
 	}
 	
 	public Set<HotelEntry> getEntries() {
