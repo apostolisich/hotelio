@@ -3,7 +3,6 @@ package com.apostolisich.api.hotelio.restcontroller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersRequest;
@@ -11,8 +10,7 @@ import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse;
 import com.apostolisich.api.hotelio.provider.amadeus.AmadeusHotelOffersService;
 
 @RestController
-@RequestMapping("/hotel")
-public class HotelOffersController {
+public class HotelOffersRestController {
 	
 	@Autowired
 	private AmadeusHotelOffersService hotelOffersService;

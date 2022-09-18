@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apostolisich.api.hotelio.hotellist.GetHotelListRequest;
@@ -18,7 +17,6 @@ import com.apostolisich.api.hotelio.hotellist.GetHotelListResponse;
 import com.apostolisich.api.hotelio.hotellist.HotelListService;
 
 @RestController
-@RequestMapping("/hotel")
 public class HotelListRestController {
 	
 	private List<HotelListService> hotelListServices;
