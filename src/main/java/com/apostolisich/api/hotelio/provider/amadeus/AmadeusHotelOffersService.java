@@ -17,7 +17,6 @@ import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse.HotelOffe
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse.HotelOfferPrice;
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse.HotelOfferRoom;
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse.HotelOfferTaxItem;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -13,7 +13,6 @@ import com.apostolisich.api.hotelio.dao.HotelBookingDAO;
 import com.apostolisich.api.hotelio.exception.OfferNotFoundException;
 import com.apostolisich.api.hotelio.hotelbooking.CreateHotelBookingRequest;
 import com.apostolisich.api.hotelio.hotelbooking.CreateHotelBookingResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
