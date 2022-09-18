@@ -3,11 +3,14 @@ package com.apostolisich.api.hotelio.provider.amadeus;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.apostolisich.api.hotelio.exception.OfferNotFoundException;
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersRequest;
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse;
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse.HotelOffer;
@@ -20,6 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class AmadeusHotelOffersService {
+	
+	private static final Logger LOGGER = LogManager.getLogger(AmadeusHotelOffersService.class);
 	
 	@Autowired
 	private AmadeusAccessTokenService accessTokenService;
@@ -135,12 +140,11 @@ public class AmadeusHotelOffersService {
 			});
 			
 			return getHotelOffersResponse;
-		} catch (JsonProcessingException e) {
-			//TODO Add a proper error message
-			e.printStackTrace();
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
 		}
 		
-		return null;
+		throw new OfferNotFoundException("There was an error while retrieving offers");
 	}
 
 }

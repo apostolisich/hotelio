@@ -2,12 +2,15 @@ package com.apostolisich.api.hotelio.provider.amadeus;
 
 import java.math.BigDecimal;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.apostolisich.api.hotelio.dao.HotelBookingDAO;
+import com.apostolisich.api.hotelio.exception.OfferNotFoundException;
 import com.apostolisich.api.hotelio.hotelbooking.CreateHotelBookingRequest;
 import com.apostolisich.api.hotelio.hotelbooking.CreateHotelBookingResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class AmadeusHotelBookingService {
+	
+	private static final Logger LOGGER = LogManager.getLogger(AmadeusHotelBookingService.class);
 	
 	private HotelBookingDAO hotelBookingDAO;
 	private AmadeusAccessTokenService accessTokenService;
@@ -58,22 +63,22 @@ public class AmadeusHotelBookingService {
 	private JsonNode getHotelOfferDetails(String offerId) {
 		String accessToken = accessTokenService.getAccessToken();
 		
-		WebClient client = WebClient.create("https://test.api.amadeus.com/v3/shopping/hotel-offers/" + offerId);
-		String response = client.get()
-							    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-							    .retrieve()
-							    .bodyToMono(String.class)
-							    .block();
-		
-		//TODO Add proper error handling
 		try {
+			WebClient client = WebClient.create("https://test.api.amadeus.com/v3/shopping/hotel-offers/" + offerId);
+			String response = client.get()
+								    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+								    .retrieve()
+								    .bodyToMono(String.class)
+								    .block();
+		
+		
 			JsonNode hotelOfferDetails = new ObjectMapper().readTree(response).get("data");
 			return hotelOfferDetails;
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
 		}
 		
-		throw new RuntimeException("Hotel offer couldn't be found in provider's system");
+		throw new OfferNotFoundException("Hotel offer couldn't be found in provider's system");
 	}
 
 }

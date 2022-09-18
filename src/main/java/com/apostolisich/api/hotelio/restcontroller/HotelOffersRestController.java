@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.apostolisich.api.hotelio.exception.UnsupportedProviderOperationException;
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersRequest;
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse;
 import com.apostolisich.api.hotelio.provider.amadeus.AmadeusHotelOffersService;
@@ -18,7 +19,7 @@ public class HotelOffersRestController {
 	@PostMapping("/offers")
 	public GetHotelOffersResponse getHotelOffers(@RequestBody GetHotelOffersRequest hotelOffersRequest) {
 		if(!"amadeus".equals(hotelOffersRequest.getProvider()))
-			throw new RuntimeException("Hotel offers are currently supported only for Amadeus");
+			throw new UnsupportedProviderOperationException("Hotel offers are currently supported only for Amadeus");
 		
 		return hotelOffersService.getHotelOffers(hotelOffersRequest);
 	}
