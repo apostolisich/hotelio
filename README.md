@@ -7,6 +7,16 @@ This is a demo practice project (many pieces are missing), created using Spring 
 2. Getting offers for a selected hotel
 3. Creating and viewing bookings
 
+## Installation
+The project is self-contained and it can easily run locally by using the following commands.
+```
+mvn package
+mvn spring-boot:run
+```
+After running the previous commands, the following endpoints can be accessed using `http://localhost:8080`.
+
+**Important:** The user needs to add their own API credentials in `src/main/resources/application.properties` for [Amadeus](https://developers.amadeus.com/) and [ApiDojo](https://rapidapi.com/apidojo/api/travel-advisor/).
+
 ## Requests/Responses
 
 **POST /hotel/list**
