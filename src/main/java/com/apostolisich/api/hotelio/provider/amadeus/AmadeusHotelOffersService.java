@@ -17,6 +17,7 @@ import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse.HotelOffe
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse.HotelOfferPrice;
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse.HotelOfferRoom;
 import com.apostolisich.api.hotelio.hoteloffers.GetHotelOffersResponse.HotelOfferTaxItem;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -83,8 +84,11 @@ public class AmadeusHotelOffersService {
 	public GetHotelOffersResponse buildHotelOffersResponse(String jsonResponse) {
 		try {
 			GetHotelOffersResponse getHotelOffersResponse = new GetHotelOffersResponse();
-			JsonNode hotelDetails = new ObjectMapper().readTree(jsonResponse).get("data").get(0);
+			JsonNode responseData = new ObjectMapper().readTree(jsonResponse).get("data");
+			if(responseData.isEmpty())
+				throw new OfferNotFoundException("No offers were found for the given criteria");
 			
+			JsonNode hotelDetails = responseData.get(0);
 			getHotelOffersResponse.setHotelName(hotelDetails.get("hotel").get("name").asText());
 			
 			hotelDetails.get("offers").forEach( offer -> {
@@ -104,12 +108,14 @@ public class AmadeusHotelOffersService {
 				
 				JsonNode room = offer.get("room");
 				HotelOfferRoom hotelRoom = new HotelOfferRoom();
-				JsonNode typeEstimated = room.get("typeEstimated");
-				if(typeEstimated.has("beds")) {
-					hotelRoom.setNumberOfBeds(typeEstimated.get("beds").asInt());
-				}
-				if(typeEstimated.has("bedType")) {
-					hotelRoom.setBedType(typeEstimated.get("bedType").asText());
+				if(room.has("typeEstimated")) {
+					JsonNode typeEstimated = room.get("typeEstimated");
+					if(typeEstimated.has("beds")) {
+						hotelRoom.setNumberOfBeds(typeEstimated.get("beds").asInt());
+					}
+					if(typeEstimated.has("bedType")) {
+						hotelRoom.setBedType(typeEstimated.get("bedType").asText());
+					}
 				}
 				hotelRoom.setRoomDescription(room.get("description").get("text").asText());
 				
@@ -139,7 +145,9 @@ public class AmadeusHotelOffersService {
 			});
 			
 			return getHotelOffersResponse;
-		} catch (Exception e) {
+		} catch(OfferNotFoundException e) {
+			throw e;
+		} catch (JsonProcessingException e) {
 			LOGGER.error(e.getMessage());
 		}
 		
