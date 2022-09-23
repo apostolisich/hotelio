@@ -19,16 +19,8 @@ After running the previous commands, the following endpoints can be accessed usi
 
 ## Requests/Responses
 
-**POST /hotel/list**
+**GET /hotel/list?latitude=&longitude=&radius=** 
 
-Request
-```
-{
-    "latitude": 37.983810,
-    "longitude": 23.727539,
-    "radius": 40
-}
-```
 Response
 ```
 [
@@ -50,18 +42,8 @@ Response
 
 ---
 
-**POST /hotel/offers**
+**GET /hotel/offers?hotelId=&provider=&checkInDate=&checkOutDate=&adults=**
 
-Request
-```
-{
-    "hotelId": "HSATHAGS",
-    "provider": "amadeus",
-    "checkInDate": "2022-10-22",
-    "checkOutDate": "2022-10-25",
-    "adults": 1
-}
-```
 Response
 ```
 {
@@ -139,7 +121,7 @@ Response
 
 ---
 
-**GET hotel/booking/{bookingReference}**
+**GET hotel/booking?bookingReference=**
 
 Response
 ```
