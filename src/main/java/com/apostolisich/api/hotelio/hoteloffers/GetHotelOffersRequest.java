@@ -1,9 +1,9 @@
 package com.apostolisich.api.hotelio.hoteloffers;
 
 /**
- * A class that represents the GetHotelOffers request which the user needs
- * to send in order to get all the available hotel offers based on the
- * given criteria.
+ * A class that represents the hotel offers request which contains the
+ * criteria provided by the user in order to get all the available hotel
+ * offers for the specified hotel id.
  */
 @SuppressWarnings("unused")
 public class GetHotelOffersRequest {
@@ -14,6 +14,14 @@ public class GetHotelOffersRequest {
 	private String checkOutDate;
 	private int adults;
 	
+	public GetHotelOffersRequest(String hotelId, String provider, String checkInDate, String checkOutDate, int adults) {
+		this.hotelId = hotelId;
+		this.provider = provider;
+		this.checkInDate = checkInDate;
+		this.checkOutDate = checkOutDate;
+		this.adults = adults;
+	}
+
 	public String getHotelId() {
 		return hotelId;
 	}

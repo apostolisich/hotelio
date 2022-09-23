@@ -2,9 +2,9 @@ package com.apostolisich.api.hotelio.restcontroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apostolisich.api.hotelio.dao.entity.Booking;
@@ -26,8 +26,8 @@ public class HotelBookingRestController {
 		this.getHotelBookingService = getHotelBookingService;
 	}
 	
-	@GetMapping("/booking/{bookingReference}")
-	private Booking retrieveBooking(@PathVariable String bookingReference) {
+	@GetMapping("/booking")
+	private Booking retrieveBooking(@RequestParam String bookingReference) {
 		return getHotelBookingService.retrieveBooking(bookingReference);
 	}
 	

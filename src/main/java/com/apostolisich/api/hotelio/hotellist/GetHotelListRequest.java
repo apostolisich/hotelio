@@ -3,9 +3,9 @@ package com.apostolisich.api.hotelio.hotellist;
 import java.util.Objects;
 
 /**
- * A class that represents the GetHotelList request which the user needs
- * to send in order to get all the available hotel entries based on the
- * given criteria.
+ * A class that represents the hotel list request which includes the
+ * criteria provided by the user in order to get all the available hotel
+ * entries based on them.
  */
 @SuppressWarnings("unused")
 public final class GetHotelListRequest {
@@ -16,6 +16,12 @@ public final class GetHotelListRequest {
 	private double longitude;
 	private int radius;
 	
+	public GetHotelListRequest(double latitude, double longitude, int radius) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.radius = radius;
+	}
+
 	public double getLatitude() {
 		return latitude;
 	}

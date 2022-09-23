@@ -8,8 +8,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apostolisich.api.hotelio.hotellist.GetHotelListRequest;
@@ -29,8 +29,9 @@ public class HotelListRestController {
 		this.hotelListServices = hotelListServices;
 	}
 	
-	@PostMapping("/list")
-	public List<GetHotelListResponse> getHotelList(@RequestBody GetHotelListRequest hotelListRequest) throws InterruptedException, ExecutionException {
+	@GetMapping("/list")
+	public List<GetHotelListResponse> getHotelList(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int radius) throws InterruptedException, ExecutionException {
+		GetHotelListRequest hotelListRequest = new GetHotelListRequest(latitude, longitude, radius);
 		Queue<CompletableFuture<GetHotelListResponse>> competablesQueue = new LinkedList<>();
 		
 		hotelListServices.forEach( hotelListService -> {
