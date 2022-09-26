@@ -21,10 +21,10 @@ public class CustomErrorHandler {
 	
 	@ExceptionHandler(OfferNotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleOfferNotFoundExceptions(Exception e) {
-		HttpStatus badRequestHttpStatus = HttpStatus.NOT_FOUND;
-		ErrorResponse errorResponse = new ErrorResponse(badRequestHttpStatus, e.getMessage());
+		HttpStatus okHttpStatus = HttpStatus.OK;
+		ErrorResponse errorResponse = new ErrorResponse(okHttpStatus, e.getMessage());
 		
-		return new ResponseEntity<>(errorResponse, badRequestHttpStatus);
+		return new ResponseEntity<>(errorResponse, okHttpStatus);
 	}
 
 }

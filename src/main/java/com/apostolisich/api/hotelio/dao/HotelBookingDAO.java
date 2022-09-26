@@ -84,7 +84,7 @@ public class HotelBookingDAO {
 	}
 	
 	/**
-	 * Creates a random booking reference which will consist of lower and upper characters
+	 * Creates a random booking reference which will consist of uppercase characters
 	 * along with digits.
 	 * 
 	 * @return the created booking reference
@@ -94,7 +94,7 @@ public class HotelBookingDAO {
         int bookingReferenceLength = 10;
  
         StringBuilder random = new StringBuilder();
-        for(int i =0; i < bookingReferenceLength; i++) {
+        for(int i = 0; i < bookingReferenceLength; i++) {
             int index = (int) (Math.random() * alphanumericCharacters.length);
             random.append(alphanumericCharacters[index]);
         }

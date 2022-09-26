@@ -32,23 +32,23 @@ public class HotelListRestController {
 	@GetMapping("/list")
 	public List<GetHotelListResponse> getHotelList(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int radius) throws InterruptedException, ExecutionException {
 		GetHotelListRequest hotelListRequest = new GetHotelListRequest(latitude, longitude, radius);
-		Queue<CompletableFuture<GetHotelListResponse>> competablesQueue = new LinkedList<>();
+		Queue<CompletableFuture<GetHotelListResponse>> completablesQueue = new LinkedList<>();
 		
 		hotelListServices.forEach( hotelListService -> {
-			competablesQueue.add(hotelListService.getHotelList(hotelListRequest));
+			completablesQueue.add(hotelListService.getHotelList(hotelListRequest));
 		});
 		
-		List<GetHotelListResponse> hotelListResponses = getCompletedHotelListResponses(competablesQueue);
+		List<GetHotelListResponse> hotelListResponses = getCompletedHotelListResponses(completablesQueue);
 		
 		return hotelListResponses;
 	}
 
 	/**
 	 * Checks the given {@code Queue} of {@code CompetableFuture} objects until
-	 * all of them are completed, store their response and remove them from the
+	 * all of them are completed, stores their response and removes them from the
 	 * {@code Queue}.
 	 * 
-	 * @param competablesQueue a {@code Queue} of {@code CompetableFuture} objects
+	 * @param completablesQueue a {@code Queue} of {@code CompetableFuture} objects
 	 * 						   that will return the {@code GetHoteListResponse} of
 	 * 						   a single provider
 	 * @return a {@code List} of {@code GetHotelListResponse} objects for all providers
@@ -56,11 +56,11 @@ public class HotelListRestController {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	private List<GetHotelListResponse> getCompletedHotelListResponses(Queue<CompletableFuture<GetHotelListResponse>> competablesQueue) throws InterruptedException, ExecutionException {
+	private List<GetHotelListResponse> getCompletedHotelListResponses(Queue<CompletableFuture<GetHotelListResponse>> completablesQueue) throws InterruptedException, ExecutionException {
 		List<GetHotelListResponse> hotelListResponses = new ArrayList<>(hotelListServices.size());
 		
-		while(!competablesQueue.isEmpty()) {
-			CompletableFuture<GetHotelListResponse> hotelListCompetable = competablesQueue.peek();
+		while(!completablesQueue.isEmpty()) {
+			CompletableFuture<GetHotelListResponse> hotelListCompetable = completablesQueue.peek();
 			
 			if(hotelListCompetable.isDone()) {
 				GetHotelListResponse hotelListResponse = hotelListCompetable.get();
@@ -68,7 +68,7 @@ public class HotelListRestController {
 					hotelListResponses.add(hotelListResponse);
 				}
 				
-				competablesQueue.remove();
+				completablesQueue.remove();
 			}
 		}
 		

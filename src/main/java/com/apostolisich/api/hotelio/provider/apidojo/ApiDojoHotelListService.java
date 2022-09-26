@@ -16,10 +16,10 @@ public class ApiDojoHotelListService extends HotelListService {
 	private static final String PROVIDER = "apidojo";
 	
 	@Value("${apidojo.api.key}")
-	private String RAPID_API_KEY;
+	private String rapidApiKey;
 	
 	@Value("${apidojo.api.host}")
-	private String RAPID_API_HOST;
+	private String rapidApiHost;
 
 	@Autowired
 	public ApiDojoHotelListService(RedisUtilityService redisUtilityService) {
@@ -44,8 +44,8 @@ public class ApiDojoHotelListService extends HotelListService {
 		WebClient client = WebClient.create(buildApiDojoHotelListUrl(hotelListRequest));
 		
 		ApiDojoHotelListResponse apiDojoHotelResponse = client.get()
-															  .header("X-RapidAPI-Key", RAPID_API_KEY)
-															  .header("X-RapidAPI-Host", RAPID_API_HOST)
+															  .header("X-RapidAPI-Key", rapidApiKey)
+															  .header("X-RapidAPI-Host", rapidApiHost)
 															  .retrieve()
 															  .bodyToMono(ApiDojoHotelListResponse.class)
 															  .block();
@@ -89,6 +89,7 @@ public class ApiDojoHotelListService extends HotelListService {
 			double latitude = apiDojoHotelEntry.getLatitude();
 			double longitude = apiDojoHotelEntry.getLongitude();
 			
+			//We skip invalid entries
 			if(name == null || latitude == 0.0 || longitude == 0.0)
 				return;
 			
