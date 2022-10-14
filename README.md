@@ -1,6 +1,6 @@
 # Hotelio
 
-This is a demo practice project (many pieces are missing), created using Spring Boot, which consumes and offers simplistic hotel API functionality. It includes an [Embedded Redis server](https://github.com/kstyrc/embedded-redis) for caching as well as an [Embedded H2 Database](https://www.h2database.com/html/main.html) for persistent storage.
+This is a demo practice project (many pieces are missing), created using Spring and Spring Boot, which consumes and offers simplistic hotel API functionality. It includes an [Embedded Redis server](https://github.com/kstyrc/embedded-redis) for caching as well as an [Embedded H2 Database](https://www.h2database.com/html/main.html) for persistent storage.
 
 ## Features
 1. Getting a list of hotels for some specified criteria
@@ -8,18 +8,18 @@ This is a demo practice project (many pieces are missing), created using Spring 
 3. Creating and viewing bookings
 
 ## Installation
-The project is self-contained and it can easily run locally by using the following commands.
+The project is self-contained and it can run locally with the following commands which need to be executed in the project's directory:
 ```
-mvn package
-mvn spring-boot:run
+mvnw package
+mvnw spring-boot:run
 ```
-After running the previous commands, the following endpoints can be accessed using `http://localhost:8080`.
+After running the previous commands, the following endpoints can be accessed using `http://localhost:8080/hotel`.
 
 **Important:** The user needs to add their own API credentials in `src/main/resources/application.properties` for [Amadeus](https://developers.amadeus.com/) and [ApiDojo](https://rapidapi.com/apidojo/api/travel-advisor/).
 
 ## Requests/Responses
 
-**GET /hotel/list?latitude=&longitude=&radius=** 
+**GET /list?latitude=&longitude=&radius=** 
 
 Response
 ```
@@ -42,7 +42,7 @@ Response
 
 ---
 
-**GET /hotel/offers?hotelId=&provider=&checkInDate=&checkOutDate=&adults=**
+**GET /offers?hotelId=&provider=&checkInDate=&checkOutDate=&adults=**
 
 Response
 ```
@@ -80,7 +80,7 @@ Response
 
 ---
 
-**POST /hotel/booking**
+**POST /booking**
 
 Request
 ```
@@ -121,7 +121,7 @@ Response
 
 ---
 
-**GET hotel/booking?bookingReference=**
+**GET /booking?bookingReference=**
 
 Response
 ```
