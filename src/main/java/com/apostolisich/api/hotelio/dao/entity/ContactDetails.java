@@ -47,7 +47,7 @@ public class ContactDetails {
 	
 	public ContactDetails() { }
 
-	public ContactDetails(String bookingReference, String title, String name, String surname, String address, String phone, String email) {
+	public ContactDetails(String title, String name, String surname, String address, String phone, String email) {
 		this.title = title;
 		this.name = name;
 		this.surname = surname;

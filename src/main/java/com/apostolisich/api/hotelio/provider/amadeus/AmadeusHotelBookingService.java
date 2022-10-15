@@ -1,6 +1,7 @@
 package com.apostolisich.api.hotelio.provider.amadeus;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.apostolisich.api.hotelio.dao.HotelBookingDAO;
+import com.apostolisich.api.hotelio.dao.entity.ContactDetails;
+import com.apostolisich.api.hotelio.dao.entity.Guest;
+import com.apostolisich.api.hotelio.dao.entity.Payment;
 import com.apostolisich.api.hotelio.exception.OfferNotFoundException;
 import com.apostolisich.api.hotelio.hotelbooking.CreateHotelBookingRequest;
 import com.apostolisich.api.hotelio.hotelbooking.CreateHotelBookingResponse;
@@ -49,8 +53,11 @@ public class AmadeusHotelBookingService {
 		JsonNode offerPriceDetails = offerDetails.get("price");
 		String currency = offerPriceDetails.get("currency").asText();
 		BigDecimal totalAmount = new BigDecimal(offerPriceDetails.get("total").asText());
+		List<Guest> guests = hotelBookingRequest.getGuests();
+		ContactDetails contactDetails = hotelBookingRequest.getContactDetails();
+		Payment payment = hotelBookingRequest.getPayment();
 		
-		return hotelBookingDAO.createNewBooking(totalAmount, currency, hotelName, checkIn, checkOut, roomDescription, hotelBookingRequest);
+		return hotelBookingDAO.createNewBooking(totalAmount, currency, hotelName, checkIn, checkOut, roomDescription, guests, contactDetails, payment);
 	}
 	
 	/**

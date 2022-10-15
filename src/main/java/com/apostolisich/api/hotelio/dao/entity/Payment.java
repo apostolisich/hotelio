@@ -41,7 +41,7 @@ public class Payment {
 	
 	public Payment() { }
 
-	public Payment(String bookingReference, String cardNumber, int cvv, String expiryDate, String cardholderName) {
+	public Payment(String cardNumber, int cvv, String expiryDate, String cardholderName) {
 		this.cardNumber = cardNumber;
 		this.cvv = cvv;
 		this.expiryDate = expiryDate;

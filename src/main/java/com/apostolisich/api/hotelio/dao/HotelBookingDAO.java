@@ -15,7 +15,6 @@ import com.apostolisich.api.hotelio.dao.entity.Booking;
 import com.apostolisich.api.hotelio.dao.entity.ContactDetails;
 import com.apostolisich.api.hotelio.dao.entity.Guest;
 import com.apostolisich.api.hotelio.dao.entity.Payment;
-import com.apostolisich.api.hotelio.hotelbooking.CreateHotelBookingRequest;
 import com.apostolisich.api.hotelio.hotelbooking.CreateHotelBookingResponse;
 
 @Repository
@@ -55,30 +54,25 @@ public class HotelBookingDAO {
 	 * @return an {@code CreateHotelBookingResponse} which contains the created booking
 	 * 		   reference
 	 */
-	public CreateHotelBookingResponse createNewBooking(BigDecimal amount, String currency, String hotelName, String checkIn, String checkOut, String roomDescription, CreateHotelBookingRequest hotelBookingRequest) {
+	public CreateHotelBookingResponse createNewBooking(BigDecimal amount, String currency, String hotelName, String checkIn, String checkOut,
+													  String roomDescription, List<Guest> guests, ContactDetails contactDetails, Payment payment) {
 		String newBookingReference = getRandomBookingReference();
-		Booking newBooking = new Booking(newBookingReference, LocalDateTime.now(), amount, currency, hotelName, checkIn, checkOut, roomDescription);
+		Booking newBooking = new Booking(newBookingReference, LocalDateTime.now(), amount, currency, hotelName, checkIn, checkOut, roomDescription, guests, contactDetails, payment);
 	
 		Session currentSession = entityManager.unwrap(Session.class);
 		
-		currentSession.save(newBooking);
-		
 		//Setting the created booking reference to all depended table entities and then
-		//saving them as well
-		Payment payment = hotelBookingRequest.getPayment();
+		//saving them as well. The "newBooking" variable will be saved automatically.
 		payment.setBooking(newBooking);
 		currentSession.save(payment);
 		
-		ContactDetails contactDetails = hotelBookingRequest.getContactDetails();
 		contactDetails.setBooking(newBooking);
 		currentSession.save(contactDetails);
 		
-		List<Guest> guests = hotelBookingRequest.getGuests();
 		guests.forEach( guest -> {
 			guest.setBooking(newBooking);
 			currentSession.save(guest);
 		});
-		
 		
 		return new CreateHotelBookingResponse(newBookingReference, true);
 	}

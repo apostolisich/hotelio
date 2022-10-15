@@ -54,8 +54,8 @@ public class Booking {
 	
 	public Booking() { }
 
-	public Booking(String bookingReference, LocalDateTime creationDate, BigDecimal amount, String currency,
-			String hotelName, String checkIn, String checkOut, String roomDescription) {
+	public Booking(String bookingReference, LocalDateTime creationDate, BigDecimal amount, String currency, String hotelName, String checkIn,
+				   String checkOut, String roomDescription, List<Guest> guests, ContactDetails contactDetails, Payment payment) {
 		this.bookingReference = bookingReference;
 		this.creationDate = creationDate;
 		this.amount = amount;
@@ -64,6 +64,9 @@ public class Booking {
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
 		this.roomDescription = roomDescription;
+		setGuests(guests);
+		setContactDetails(contactDetails);
+		setPayment(payment);
 	}
 
 	public String getBookingReference() {
@@ -135,6 +138,7 @@ public class Booking {
 	}
 
 	public void setGuests(List<Guest> guests) {
+		guests.forEach( guest -> guest.setBooking(this));
 		this.guests = guests;
 	}
 
@@ -144,6 +148,7 @@ public class Booking {
 
 	public void setContactDetails(ContactDetails contactDetails) {
 		this.contactDetails = contactDetails;
+		contactDetails.setBooking(this);
 	}
 
 	public Payment getPayment() {
@@ -151,6 +156,7 @@ public class Booking {
 	}
 
 	public void setPayment(Payment payment) {
+		payment.setBooking(this);
 		this.payment = payment;
 	}
 	

@@ -41,7 +41,7 @@ public class Guest {
 	
 	public Guest() { }
 
-	public Guest(String bookingReference, String title, String name, String surname, int age) {
+	public Guest(String title, String name, String surname, int age) {
 		this.title = title;
 		this.name = name;
 		this.surname = surname;
