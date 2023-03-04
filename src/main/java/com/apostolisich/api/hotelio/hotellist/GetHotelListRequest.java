@@ -1,7 +1,5 @@
 package com.apostolisich.api.hotelio.hotellist;
 
-import java.util.Objects;
-
 /**
  * A class that represents the hotel list request which includes the
  * criteria provided by the user in order to get all the available hotel
@@ -10,7 +8,7 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public final class GetHotelListRequest {
 	
-	private static final char KEY_DELIMITER = '@';
+	private static final char CACHE_KEY_DELIMITER = '@';
 	
 	private double latitude;
 	private double longitude;
@@ -46,12 +44,12 @@ public final class GetHotelListRequest {
 		this.radius = radius;
 	}
 	
-	public String getKey() {
+	public String getCacheKey() {
 		StringBuilder keyBuilder = new StringBuilder();
 		keyBuilder.append(latitude);
-		keyBuilder.append(KEY_DELIMITER);
+		keyBuilder.append(CACHE_KEY_DELIMITER);
 		keyBuilder.append(longitude);
-		keyBuilder.append(KEY_DELIMITER);
+		keyBuilder.append(CACHE_KEY_DELIMITER);
 		keyBuilder.append(radius);
 		
 		return keyBuilder.toString();

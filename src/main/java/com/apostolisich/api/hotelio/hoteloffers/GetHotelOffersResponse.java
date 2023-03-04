@@ -1,15 +1,10 @@
 package com.apostolisich.api.hotelio.hoteloffers;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A class the represents the entire response of the Hotel Offers response.
@@ -35,11 +30,11 @@ public class GetHotelOffersResponse {
 	}
 
 	public void addOffer(HotelOffer offer) {
-		if(this.offers == null) {
-			this.offers = new ArrayList<>();
+		if(offers == null) {
+			offers = new ArrayList<>();
 		}
 		
-		this.offers.add(offer);
+		offers.add(offer);
 	}
 	
 	public static class HotelOffer {

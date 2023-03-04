@@ -12,15 +12,15 @@ import com.apostolisich.api.hotelio.redis.RedisUtilityService;
  * for a specific provider, with the results coming directly from the provider
  * via an HTTP request or from the internal Redis cache if they exist there.
  * 
- * The sub-classes of this class are automatically injected in the HotelListRestController
+ * The subclasses of this class are automatically injected in the HotelListRestController
  * providing an easy way to define new providers by just extending this class.
  * 
  * {@link com.apostolisich.api.hotelio.restcontroller.HotelListRestController#HotelListRestController(List)}
  */
 public abstract class HotelListService {
 	
-	private String providerName;
-	private RedisUtilityService redisUtilityService;
+	private final String providerName;
+	private final RedisUtilityService redisUtilityService;
 	
 	public HotelListService(String providerName, RedisUtilityService redisUtilityService) {
 		this.providerName = providerName;
@@ -35,8 +35,8 @@ public abstract class HotelListService {
 	 * @return the constructed {@code GetHotelListResponse} of all the available hotels
 	 */
 	@Async
-	public CompletableFuture<GetHotelListResponse> getHotelList(GetHotelListRequest hotelListRequest) {
-		String cacheKey = providerName + hotelListRequest.getKey();
+	public final CompletableFuture<GetHotelListResponse> getHotelList(GetHotelListRequest hotelListRequest) {
+		String cacheKey = providerName + hotelListRequest.getCacheKey();
 		
 		GetHotelListResponse getHotelListResponse = redisUtilityService.findHotelListResponseByKey(cacheKey);
 		if(getHotelListResponse == null) {
