@@ -2,7 +2,6 @@ package com.apostolisich.api.hotelio.hotellist;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
 import org.springframework.scheduling.annotation.Async;
 
 import com.apostolisich.api.hotelio.redis.RedisUtilityService;
@@ -19,14 +18,6 @@ import com.apostolisich.api.hotelio.redis.RedisUtilityService;
  */
 public abstract class HotelListService {
 	
-	private final String providerName;
-	private final RedisUtilityService redisUtilityService;
-	
-	public HotelListService(String providerName, RedisUtilityService redisUtilityService) {
-		this.providerName = providerName;
-		this.redisUtilityService = redisUtilityService;
-	}
-	
 	/**
 	 * Returns all the available hotels based on the provided {@code GetHotelListRequest}, either
 	 * directly from the provider or from the cache if they exist there.
@@ -34,18 +25,35 @@ public abstract class HotelListService {
 	 * @param hotelListRequest the body of the {@code GetHotelListRequest} request
 	 * @return the constructed {@code GetHotelListResponse} of all the available hotels
 	 */
-	@Async
-	public final CompletableFuture<GetHotelListResponse> getHotelList(GetHotelListRequest hotelListRequest) {
+	public final GetHotelListResponse getHotelList(GetHotelListRequest hotelListRequest) {
+		String providerName = getProviderName();
+		RedisUtilityService redisUtilityService = getRedisUtilityService();
 		String cacheKey = providerName + hotelListRequest.getCacheKey();
-		
+
 		GetHotelListResponse getHotelListResponse = redisUtilityService.findHotelListResponseByKey(cacheKey);
 		if(getHotelListResponse == null) {
 			getHotelListResponse = getHotelListFromProvider(hotelListRequest);
 			redisUtilityService.save(cacheKey, getHotelListResponse);
 		}
-		
-		return CompletableFuture.completedFuture(getHotelListResponse);
+
+		return getHotelListResponse;
 	}
+
+	/**
+	 * Returns the name of the current provider.
+	 *
+	 * @return the name of the current provider
+	 */
+	protected abstract String getProviderName();
+
+	/**
+	 * Returns a {@code RedisUtilityService} object that provides access to the
+	 * redis cache.
+	 *
+	 * @return a {@code RedisUtilityService} object that provides access to the
+	 * 	 	   redis cache.
+	 */
+	protected abstract RedisUtilityService getRedisUtilityService();
 	
 	/**
 	 * Returns all the available hotels from the provider.

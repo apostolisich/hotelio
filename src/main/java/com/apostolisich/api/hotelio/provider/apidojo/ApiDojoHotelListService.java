@@ -21,9 +21,21 @@ public class ApiDojoHotelListService extends HotelListService {
 	@Value("${apidojo.api.host}")
 	private String rapidApiHost;
 
+	private final RedisUtilityService redisUtilityService;
+
 	@Autowired
 	public ApiDojoHotelListService(RedisUtilityService redisUtilityService) {
-		super(PROVIDER, redisUtilityService);
+		this.redisUtilityService = redisUtilityService;
+	}
+
+	@Override
+	protected String getProviderName() {
+		return PROVIDER;
+	}
+
+	@Override
+	protected RedisUtilityService getRedisUtilityService() {
+		return redisUtilityService;
 	}
 
 	@Override

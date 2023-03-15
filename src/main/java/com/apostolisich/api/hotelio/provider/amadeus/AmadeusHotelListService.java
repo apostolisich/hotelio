@@ -12,17 +12,29 @@ import com.apostolisich.api.hotelio.redis.RedisUtilityService;
 
 @Service
 public class AmadeusHotelListService extends HotelListService {
-	
+
 	private static final String PROVIDER = "amadeus";
+
+	private final RedisUtilityService redisUtilityService;
+
+	private final AmadeusAccessTokenService accessTokenCreator;
 	
 	@Autowired
-	private AmadeusAccessTokenService accessTokenCreator;
-	
-	@Autowired
-	public AmadeusHotelListService(RedisUtilityService redisUtilityService) {
-		super(PROVIDER, redisUtilityService);
+	public AmadeusHotelListService(RedisUtilityService redisUtilityService, AmadeusAccessTokenService accessTokenCreator) {
+		this.redisUtilityService = redisUtilityService;
+		this.accessTokenCreator = accessTokenCreator;
 	}
-	
+
+	@Override
+	protected String getProviderName() {
+		return PROVIDER;
+	}
+
+	@Override
+	protected RedisUtilityService getRedisUtilityService() {
+		return redisUtilityService;
+	}
+
 	@Override
 	protected GetHotelListResponse getHotelListFromProvider(GetHotelListRequest hotelListRequest) {
 		AmadeusHotelListResponse amadeusHotelListResponse = getHotelListResponseFromAmadeus(hotelListRequest);
@@ -32,7 +44,7 @@ public class AmadeusHotelListService extends HotelListService {
 
 	/**
 	 * Sends a HotelList request to Amadeus based on the given {@code GetHotelListRequest}
-	 * and gets all the available hotels based on this criteria.
+	 * and gets all the available hotels based on these criteria.
 	 * 
 	 * @param hotelListRequest the body of the {@code GetHotelListRequest} request
 	 * @return the HotelList response from Amadeus

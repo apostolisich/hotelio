@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
+import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -49,8 +48,17 @@ public class HotelBookingDAO {
 	 * Creates a new booking based on the selected offer and stores all its details
 	 * in the database.
 	 * 
-	 * @param hotelBookingRequest the {@code CreateHotelBookingRequest} for the current
-	 * 					          booking.
+	 * @param amount the total cost of the booking
+	 * @param currency the amount currency
+	 * @param hotelName the name of the hotel
+	 * @param checkIn the check-in date
+	 * @param checkOut the check-out date
+	 * @param roomDescription a brief description of the room
+	 * @param guests a {@code List} of {@code Guest} object containing the details of all
+	 *               the guests
+	 * @param contactDetails a {@code ContactDetails} object that includes all the contact
+	 *                       details
+	 * @param payment a {@code Payment} object that includes all the payment details
 	 * @return an {@code CreateHotelBookingResponse} which contains the created booking
 	 * 		   reference
 	 */
