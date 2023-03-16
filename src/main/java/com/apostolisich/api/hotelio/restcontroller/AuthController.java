@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
+
     private final Logger LOG = LoggerFactory.getLogger(AuthController.class);
+
     private final JwtTokenService jwtTokenService;
+
     @Autowired
     public AuthController(JwtTokenService jwtTokenService) {
         this.jwtTokenService = jwtTokenService;
     }
+
     @PostMapping("/jwtToken")
     public String generateJwtToken(Authentication authentication) {
         LOG.debug("JwtToken requested for user: '{}'", authentication.getName());

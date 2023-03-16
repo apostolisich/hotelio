@@ -24,11 +24,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     private final RsaKeyProperties rsaKeys;
+
     @Autowired
     public SecurityConfig(RsaKeyProperties rsaKeys) {
         this.rsaKeys = rsaKeys;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -43,6 +46,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions().sameOrigin())
                 .build();
     }
+
     @Bean
     JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(rsaKeys.publicKey()).privateKey(rsaKeys.privateKey()).build();
@@ -50,6 +54,7 @@ public class SecurityConfig {
 
         return new NimbusJwtEncoder(jwkSource);
     }
+
     @Bean
     JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(rsaKeys.publicKey()).build();

@@ -18,11 +18,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ApiUserDetailsService implements UserDetailsService {
+
     private final ApiUserDAO apiUserDAO;
+
     @Autowired
     public ApiUserDetailsService(ApiUserDAO apiUserDAO) {
         this.apiUserDAO = apiUserDAO;
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         ApiUser apiUser = apiUserDAO.findByUsername(username);
