@@ -20,7 +20,7 @@ After running the previous commands, the following endpoints can be accessed usi
 
 ## Requests/Responses
 
-**GET /hotel/jwtToken** (Basic authentication is required, e.g. demo:password)
+**POST /hotel/jwtToken** (Basic authentication is required, e.g. demo:password)
 
 Response
 ```
