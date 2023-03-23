@@ -1,6 +1,6 @@
 # Hotelio
 
-This is a demo practice project (many pieces are missing), created using Spring and Spring Boot, which consumes and offers simplistic hotel API functionality. It includes an [Embedded Redis server](https://github.com/kstyrc/embedded-redis) for caching as well as an [Embedded H2 Database](https://www.h2database.com/html/main.html) for persistent storage.
+A practice project (created using Spring and Spring Boot) that offers a simple hotel search and book functionality. It includes an [Embedded Redis server](https://github.com/kstyrc/embedded-redis) for caching as well as an [Embedded H2 Database](https://www.h2database.com/html/main.html) for persistent storage.
 
 ## Features
 1. User authentication via JWT tokens (Bearer authentication) for all requests
@@ -26,6 +26,8 @@ Response
 ```
 eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoiZGVtbyIsImV4cCI6MTY3ODkxOTExNywiaWF0IjoxNjc4OTE1NT...
 ```
+
+---
 
 **GET /list?latitude=&longitude=&radius=** 
 
