@@ -10,6 +10,8 @@ import com.apostolisich.api.hotelio.hotellist.GetHotelListResponse;
 import com.apostolisich.api.hotelio.hotellist.HotelListService;
 import com.apostolisich.api.hotelio.redis.RedisUtilityService;
 
+import java.util.concurrent.CompletableFuture;
+
 @Service
 public class AmadeusHotelListService extends HotelListService {
 
@@ -36,10 +38,8 @@ public class AmadeusHotelListService extends HotelListService {
 	}
 
 	@Override
-	protected GetHotelListResponse getHotelListFromProvider(GetHotelListRequest hotelListRequest) {
-		AmadeusHotelListResponse amadeusHotelListResponse = getHotelListResponseFromAmadeus(hotelListRequest);
-		
-		return buildGetHotelListResponse(amadeusHotelListResponse);
+	protected CompletableFuture<GetHotelListResponse> getHotelListFromProvider(GetHotelListRequest hotelListRequest) {
+		return CompletableFuture.supplyAsync(() -> buildGetHotelListResponse(getHotelListResponseFromAmadeus(hotelListRequest)));
 	}
 
 	/**
@@ -73,11 +73,11 @@ public class AmadeusHotelListService extends HotelListService {
 		
 		amadeusHotelListUrlBuilder.append("https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-geocode?");
 		amadeusHotelListUrlBuilder.append("latitude=");
-		amadeusHotelListUrlBuilder.append(String.valueOf(hotelListRequest.getLatitude()));
+		amadeusHotelListUrlBuilder.append(hotelListRequest.getLatitude());
 		amadeusHotelListUrlBuilder.append("&longitude=");
-		amadeusHotelListUrlBuilder.append(String.valueOf(hotelListRequest.getLongitude()));
+		amadeusHotelListUrlBuilder.append(hotelListRequest.getLongitude());
 		amadeusHotelListUrlBuilder.append("&radius=");
-		amadeusHotelListUrlBuilder.append(String.valueOf(hotelListRequest.getRadius()));
+		amadeusHotelListUrlBuilder.append(hotelListRequest.getRadius());
 		amadeusHotelListUrlBuilder.append("&radiusUnit=KM");
 		amadeusHotelListUrlBuilder.append("&hotelSource=ALL");
 		

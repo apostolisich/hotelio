@@ -37,8 +37,39 @@ public class HotelListRestController {
 	public List<GetHotelListResponse> getHotelList(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int radius) throws InterruptedException, ExecutionException {
 		GetHotelListRequest hotelListRequest = new GetHotelListRequest(latitude, longitude, radius);
 
-		List<GetHotelListResponse> hotelListResponses = new ArrayList<>(hotelListServices.size());
-		hotelListServices.forEach( hotelListService -> hotelListResponses.add(hotelListService.getHotelList(hotelListRequest)));
+		Queue<CompletableFuture<GetHotelListResponse>> completablesQueue = new LinkedList<>();
+		hotelListServices.forEach( hotelListService -> completablesQueue.add(hotelListService.getHotelList(hotelListRequest)));
+
+		return getCompletedHotelListResponses(completablesQueue);
+	}
+
+	/**
+	 * Checks the given {@code Queue} of {@code CompetableFuture} objects until
+	 * all of them are completed, stores their response and removes them from the
+	 * {@code Queue}.
+	 *
+	 * @param completablesQueue a {@code Queue} of {@code CompetableFuture} objects
+	 * 						   each of which will return the {@code GetHoteListResponse}
+	 * 						   of a single provider
+	 * @return a {@code List} of {@code GetHotelListResponse} objects for all providers
+	 * 		   that returned results for the current search
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	private List<GetHotelListResponse> getCompletedHotelListResponses(Queue<CompletableFuture<GetHotelListResponse>> completablesQueue) throws InterruptedException, ExecutionException {
+		List<GetHotelListResponse> hotelListResponses = new ArrayList<>(completablesQueue.size());
+
+		while (!completablesQueue.isEmpty()) {
+			CompletableFuture<GetHotelListResponse> hotelListCompletable = completablesQueue.peek();
+
+			if (hotelListCompletable.isDone()) {
+				GetHotelListResponse hotelListResponse = hotelListCompletable.get();
+				hotelListResponses.add(hotelListResponse);
+				LOG.debug("Fetching hotel list completed: " + hotelListResponse.getProvider());
+
+				completablesQueue.remove();
+			}
+		}
 
 		return hotelListResponses;
 	}

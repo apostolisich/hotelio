@@ -1,5 +1,7 @@
 package com.apostolisich.api.hotelio.provider.apidojo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,8 @@ import com.apostolisich.api.hotelio.hotellist.GetHotelListRequest;
 import com.apostolisich.api.hotelio.hotellist.GetHotelListResponse;
 import com.apostolisich.api.hotelio.hotellist.HotelListService;
 import com.apostolisich.api.hotelio.redis.RedisUtilityService;
+
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ApiDojoHotelListService extends HotelListService {
@@ -39,15 +43,13 @@ public class ApiDojoHotelListService extends HotelListService {
 	}
 
 	@Override
-	protected GetHotelListResponse getHotelListFromProvider(GetHotelListRequest hotelListRequest) {
-		ApiDojoHotelListResponse apiDojoHotelListResponse = getApiDojoHotelListResponse(hotelListRequest);
-	
-		return buildGetHotelListResponse(apiDojoHotelListResponse);
+	protected CompletableFuture<GetHotelListResponse> getHotelListFromProvider(GetHotelListRequest hotelListRequest) {
+		return CompletableFuture.supplyAsync(() -> buildGetHotelListResponse(getApiDojoHotelListResponse(hotelListRequest)));
 	}
 	
 	/**
 	 * Sends a HotelList request to ApiDojo based on the given {@code GetHotelListRequest}
-	 * and gets all the available hotels based on this criteria.
+	 * and gets all the available hotels based on these criteria.
 	 * 
 	 * @param hotelListRequest the body of the {@code GetHotelListRequest} request
 	 * @return the HotelList response from ApiDojo

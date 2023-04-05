@@ -2,9 +2,12 @@ package com.apostolisich.api.hotelio.hotellist;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import org.springframework.scheduling.annotation.Async;
 
+import com.apostolisich.api.hotelio.provider.amadeus.AmadeusHotelListService;
 import com.apostolisich.api.hotelio.redis.RedisUtilityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * A class the defines how the {@code GetHotelListResponse} will be populated
@@ -17,6 +20,8 @@ import com.apostolisich.api.hotelio.redis.RedisUtilityService;
  * {@link com.apostolisich.api.hotelio.restcontroller.HotelListRestController#HotelListRestController(List)}
  */
 public abstract class HotelListService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AmadeusHotelListService.class);
 	
 	/**
 	 * Returns all the available hotels based on the provided {@code GetHotelListRequest}, either
@@ -25,18 +30,25 @@ public abstract class HotelListService {
 	 * @param hotelListRequest the body of the {@code GetHotelListRequest} request
 	 * @return the constructed {@code GetHotelListResponse} of all the available hotels
 	 */
-	public final GetHotelListResponse getHotelList(GetHotelListRequest hotelListRequest) {
+	public final CompletableFuture<GetHotelListResponse> getHotelList(GetHotelListRequest hotelListRequest) {
 		String providerName = getProviderName();
 		RedisUtilityService redisUtilityService = getRedisUtilityService();
 		String cacheKey = providerName + hotelListRequest.getCacheKey();
 
 		GetHotelListResponse getHotelListResponse = redisUtilityService.findHotelListResponseByKey(cacheKey);
-		if(getHotelListResponse == null) {
-			getHotelListResponse = getHotelListFromProvider(hotelListRequest);
-			redisUtilityService.save(cacheKey, getHotelListResponse);
-		}
+		if(getHotelListResponse != null) {
+			LOG.debug("Fetching hotel list from Redis: " + providerName);
+			return CompletableFuture.completedFuture(getHotelListResponse);
+		} else {
+			LOG.debug("Fetching hotel list via API: " + providerName);
+			return getHotelListFromProvider(hotelListRequest).thenApply(hotelListResponse -> {
+				if(hotelListResponse != null) {
+					redisUtilityService.save(cacheKey, hotelListResponse);
+				}
 
-		return getHotelListResponse;
+				return hotelListResponse;
+			});
+		}
 	}
 
 	/**
@@ -61,6 +73,7 @@ public abstract class HotelListService {
 	 * @param hotelListRequest the body of the {@code GetHotelListRequest} request
 	 * @return he constructed {@code GetHotelListResponse} of all the available hotels
 	 */
-	protected abstract GetHotelListResponse getHotelListFromProvider(GetHotelListRequest hotelListRequest);
+	@Async
+	protected abstract CompletableFuture<GetHotelListResponse> getHotelListFromProvider(GetHotelListRequest hotelListRequest);
 
 }
